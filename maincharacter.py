@@ -1,50 +1,38 @@
 import json
-import os
-## Create Class for creating new dictionaries here
 
-class Main_Character:
-    def __init__(self, name, level, coins, weapon, armor):
+class MainCharacter:
+    def __init__(self, name, dungeon_level=1, armor=None, weapon=None, coins=100):
         self.name = name
-        self.level = level
-        self.coins = coins
-        self.weapon = weapon 
+        self.dungeon_level = dungeon_level
         self.armor = armor
-    def __str__(self):
-        return f"{self.name}, {self.level}, {self.coins}, {self.weapon}, {self.armor}"
-    
-with open("data.json", "r") as f:
-    # Serialize the updated Python list to a JSON string
-    data = json.load(f)
-    ##Call classes in here
+        self.weapon = weapon
+        self.coins = coins
 
-    def maincharacter(name, level, coins, weapon, armor):
-        main = Main_Character(name, level, coins, weapon, armor)
-        data.append(cat.__dict__)
-        for i in data:
-            print(i)
+def create_main_character():
+    name = input("Welcome to the game! Please enter your character's name: ")
+    return MainCharacter(name)
 
-user = input("Do you want to enter a catbreed to the file? Y or N").lower()
-while user in "y":
-    breed = input("What's the name of the cat breed?").lower()
-    hair_length = input("How long is the cat's hair normally? Short/Medium/Long").lower()
-    origin = input("What country the cat originate from?").lower()
-    size = input("How big is the cat breed? Small/Medium/Large").lower()
+def save_character_info(character):
+    with open("character_info.json", "w") as f:
+        json.dump(character.__dict__, f)
 
-    catbreed(breed, hair_length, origin, size)
+def load_character_info():
+    try:
+        with open("character_info.json", "r") as f:
+            character_info = json.load(f)
+            return MainCharacter(**character_info)
+    except FileNotFoundError:
+        return None
 
-    user = input("Enter another catbreed by saying Y, N if not.")
+def main():
+    player = load_character_info()
+    if player is None:
+        player = create_main_character()
+        save_character_info(player)
 
+    print(f"Welcome back, {player.name}!")
+    print(f"You are currently at Dungeon Level {player.dungeon_level}.")
+    print(f"You have {player.coins} coins, {player.armor} armor, and {player.weapon} equipped.")
 
-#No code needed below this line
-# Creates a new JSON file with the updated data
-new_file = "updated.json"
-with open(new_file, "w") as f:
-    # Serialize the updated Python list to a JSON string
-    json_string = json.dumps(data)
-
-    # Write the JSON string to the new JSON file
-    f.write(json_string)
-
-# Overwrite the old JSON file with the new one
-os.remove("data.json")
-os.rename(new_file, "data.json")
+if __name__ == "__main__":
+    main()
