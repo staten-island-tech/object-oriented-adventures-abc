@@ -1,15 +1,16 @@
 import json
 
 class MainCharacter:
-    def __init__(self, name, dungeon_level=1, armor=None, weapon=None, coins=100):
+    def __init__(self, name, dungeon_level=1, armor=None, weapon=None, coins=100, health=100):
         self.name = name
         self.dungeon_level = dungeon_level
         self.armor = armor
         self.weapon = weapon
         self.coins = coins
-
+        self.health = health
 def create_main_character():
-    name = input("Welcome to the game! Please enter your character's name: ")
+    print("Welcome to The Dungeons! Open readME to learn about the game!")
+    name = input("What do you want to name your character? Enter:")
     return MainCharacter(name)
 
 def save_character_info(character):
@@ -23,16 +24,4 @@ def load_character_info():
             return MainCharacter(**character_info)
     except FileNotFoundError:
         return None
-
-def main():
-    player = load_character_info()
-    if player is None:
-        player = create_main_character()
-        save_character_info(player)
-
-    print(f"Welcome back, {player.name}!")
-    print(f"You are currently at Dungeon Level {player.dungeon_level}.")
-    print(f"You have {player.coins} coins, {player.armor} armor, and {player.weapon} equipped.")
-
-if __name__ == "__main__":
-    main()
+create_main_character()
