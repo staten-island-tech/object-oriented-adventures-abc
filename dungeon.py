@@ -28,10 +28,10 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
         for level in dungeon_levels:
             if level["unlocked"]:
                 print(f"Dungeon Level {level['level']}: {level['name']}")
-        chosen_dungeon = int(input("Which dungeon would you like to enter? (Enter the level number): "))
+        chosen_dungeon = int(input("What dungeon do you want to do? Enter the number."))
         chosen_level = next((level for level in dungeon_levels if level["level"] == chosen_dungeon), None)
         if chosen_level is None:
-            print("Invalid dungeon level. Please choose from the available options.")
+            print("Think before you type.")
             continue
         if chosen_level["unlocked"]:
             break
@@ -45,26 +45,26 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
         action = input("Do you want to hit or block? (hit/block): ")
         if action.lower() == "hit":
             if random.random() < 0.5:
-                print("You missed and got hit by the monster!")
+                print("You suck and got hit by the monster!")
                 player.health -= chosen_level["damage"]
             else:
                 equipped_weapon = player.weapon
                 weapon_damage = next((weapon.damage for weapon in weapon_shop if weapon.name == equipped_weapon), 5)
-                print(f"You hit the monster for {weapon_damage} damage!")
+                print(f"You hit the monster for {weapon_damage}. Good job I guess.")
                 chosen_level["health"] -= weapon_damage
                 if chosen_level["health"] <= 0:
-                    print("You defeated the monster!")
+                    print("Wow, you succeeded in something in your life.")
                     player.coins += chosen_level["level"] * 100
                     break
         elif action.lower() == "block":
             if random.random() < 0.5:
-                print("You failed to block and got hit by the monster!")
+                print("Can you not hide from an attack?")
                 player.health -= chosen_level["damage"]
             else:
-                print("You successfully blocked the monster's attack and gained 5 health!")
+                print("Nice, you hid and recovered a bit.")
                 player.health += 5
         else:
-            print("Invalid action. Please choose 'hit' or 'block'.")
+            print("???? 'Hit' or 'Block'")
 
         if player.armor:
             equipped_armor = player.armor
@@ -72,7 +72,7 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
             player.health += armor_health
 
         if player.health <= 0:
-            print("Game over! Your health reached zero.")
+            print("You died, try again.")
             break
 
     if chosen_level["health"] <= 0:
@@ -85,4 +85,4 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
         save_character_info(player)
 
     if chosen_level["level"] == 10:
-        print("Congratulations! You've completed all dungeon levels!")
+        print("Dang, you might be kind of good! Wait for more levels to come out.")
