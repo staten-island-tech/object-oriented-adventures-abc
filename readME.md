@@ -18,6 +18,12 @@ Type exit to leave the shops.
 The weapon shop displays its name, price, and excess damage done.
 The armor shop displays its name, price, and health added to the player.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Armor
+Armor adds health to a player in a dungeon.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Weapon
+Weapons add damage that the player does to the monster from 5.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Dungeons
 There are 10 dungeon levels. 
 Dungeons can be repeated, however, to enter the next dungeon, the prior dungeon must be successfully completed. 
