@@ -1,12 +1,11 @@
 import random
-from character import save_character_info
+from main import save_character_info
 
-def dungeon_interaction(player, weapon_shop, armor_shop):
+def dungeon_interaction(player):
     print("Entering the dungeon...")
-    player.health = 100
 
     dungeon_levels = [
-        {"level": 1, "name": "Trainer", "health": 100, "damage": 5, "unlocked": True},
+        {"level": 1, "name": "Trainer", "health": 100, "damage": 5, "unlocked": False},
         {"level": 2, "name": "Dog", "health": 125, "damage": 15, "unlocked": False},
         {"level": 3, "name": "Tiger", "health": 150, "damage": 20, "unlocked": False},
         {"level": 4, "name": "Zombie", "health": 175, "damage": 25, "unlocked": False},
@@ -18,7 +17,6 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
         {"level": 10, "name": "Demon", "health": 325, "damage": 80, "unlocked": False}
     ]
 
-    # Unlock levels up to the player's current dungeon level
     for level in dungeon_levels:
         if level["level"] <= player.dungeon_level:
             level["unlocked"] = True
@@ -28,61 +26,80 @@ def dungeon_interaction(player, weapon_shop, armor_shop):
         for level in dungeon_levels:
             if level["unlocked"]:
                 print(f"Dungeon Level {level['level']}: {level['name']}")
-        chosen_dungeon = int(input("What dungeon do you want to do? Enter the number."))
-        chosen_level = next((level for level in dungeon_levels if level["level"] == chosen_dungeon), None)
-        if chosen_level is None:
-            print("Think before you type.")
-            continue
-        if chosen_level["unlocked"]:
-            break
-        else:
-            print("This dungeon is locked. Complete the previous dungeons first.")
+
+        chosen_dungeon = input("What dungeon do you want to do? Enter the number or type 'exit' to leave: ")
+
+        if chosen_dungeon.lower() == 'exit':
+            print("Exiting the dungeon...")
             return
 
-    while chosen_level["health"] > 0:
-        print(f"Your Health: {player.health}")
-        print(f"Monster Health: {chosen_level['health']}")
-        action = input("Do you want to hit or block? (hit/block): ")
-        if action.lower() == "hit":
-            if random.random() < 0.5:
-                print("You suck and got hit by the monster!")
-                player.health -= chosen_level["damage"]
-            else:
-                equipped_weapon = player.weapon
-                weapon_damage = next((weapon.damage for weapon in weapon_shop if weapon.name == equipped_weapon), 5)
-                print(f"You hit the monster for {weapon_damage}. Good job I guess.")
-                chosen_level["health"] -= weapon_damage
-                if chosen_level["health"] <= 0:
-                    print("Wow, you succeeded in something in your life.")
-                    player.coins += chosen_level["level"] * 100
-                    break
-        elif action.lower() == "block":
-            if random.random() < 0.5:
-                print("Can you not hide from an attack?")
-                player.health -= chosen_level["damage"]
-            else:
-                print("Nice, you hid and recovered a bit.")
-                player.health += 5
-        else:
-            print("???? 'Hit' or 'Block'")
+        try:
+            chosen_dungeon = int(chosen_dungeon)
+        except ValueError:
+            print("Invalid choice. Try again.")
+            continue
 
-        if player.armor:
-            equipped_armor = player.armor
-            armor_health = next((armor.health for armor in armor_shop if armor.name == equipped_armor), 0)
-            player.health += armor_health
+        chosen_level = next((level for level in dungeon_levels if level["level"] == chosen_dungeon), None)
 
-        if player.health <= 0:
-            print("You died, try again.")
+        if chosen_level is None:
+            print("Invalid choice. Try again.")
+            continue
+
+        if not chosen_level["unlocked"]:
+            print("This dungeon is locked. Complete the previous dungeons first.")
+            continue
+
+        # Reset player's health to maximum health at the start of the dungeon
+        player.base_health = player.max_health
+
+        while chosen_level["health"] > 0:
+            print(f"Your Health: {player.health}")
+            print(f"Monster Health: {chosen_level['health']}")
+            action = input("Do you want to hit, block, or exit? (hit/block/exit): ")
+
+            if action.lower() == "hit":
+                if random.random() < 0.5:
+                    print("You got hit by the monster!")
+                    player.base_health -= chosen_level["damage"]
+                else:
+                    print("You hit the monster! Good job!")
+                    chosen_level["health"] -= 20
+                    if chosen_level["health"] <= 0:
+                        print("Congratulations! You defeated the monster!")
+                        player.coins += chosen_level["level"] * 100
+                        break
+            elif action.lower() == "block":
+                if random.random() < 0.5:
+                    print("You failed to block the monster's attack!")
+                    player.base_health -= chosen_level["damage"]
+                else:
+                    print("You successfully blocked the monster's attack and recovered a bit.")
+                    player.base_health += 10
+            elif action.lower() == "exit":
+                print("Exiting the dungeon...")
+                return
+            else:
+                print("Invalid choice. Choose 'hit', 'block', or 'exit'.")
+
+            player.base_health = min(player.base_health, player.max_health)
+
+            if player.base_health <= 0:
+                print("You died. Game over.")
+                return
+
+        if player.base_health <= 0:
+            return
+
+        if chosen_level["health"] <= 0:
+            if chosen_level["level"] < 10:
+                next_level = next((level for level in dungeon_levels if level["level"] == chosen_level["level"] + 1), None)
+                if next_level:
+                    next_level["unlocked"] = True
+                    print(f"Next dungeon, Dungeon Level {next_level['level']} ({next_level['name']}), is now unlocked!")
+                player.dungeon_level = chosen_level["level"] + 1
+            save_character_info(player)
+
+        if chosen_level["level"] == 10:
+            print("Congratulations! You've completed all dungeons. Wait for more levels to come out.")
             break
 
-    if chosen_level["health"] <= 0:
-        if chosen_level["level"] < 10:
-            next_level = next((level for level in dungeon_levels if level["level"] == chosen_level["level"] + 1), None)
-            if next_level is not None:
-                next_level["unlocked"] = True
-                print(f"Next dungeon, Dungeon Level {next_level['level']} ({next_level['name']}), is now unlocked!")
-            player.dungeon_level = chosen_level["level"] + 1
-        save_character_info(player)
-
-    if chosen_level["level"] == 10:
-        print("Dang, you might be kind of good! Wait for more levels to come out.")
