@@ -80,7 +80,7 @@ def dungeon_interaction(player, save_function):
             next_level["unlocked"] = True
             print(f"Next dungeon, Dungeon Level {next_level['level']} ({next_level['name']}), is now unlocked!")
         player.dungeon_level = chosen_level["level"] + 1
-    save_function(player)  # Call the function passed as an argument
+    save_function(player) 
 
 
     if chosen_level["level"] == 10:

@@ -14,9 +14,9 @@ class MainCharacter:
 
     def health(self):
         if self.armor:
-            return min(self.base_health + self.armor.health, self.max_health)
+            return (self.base_health + self.armor.health, self.max_health)
         else:
-            return min(self.base_health, self.max_health)
+            return (self.base_health, self.max_health)
 
     def max_health(self):
         if self.armor:
@@ -49,7 +49,7 @@ def display_character_info(player):
     print(f"Coins: {player.coins}")
     print(f"Equipped Armor: {player.armor.name if player.armor else 'None'}")
     print(f"Equipped Weapon: {player.weapon}")
-    print(f"Health: {player.health()}")  # Call health() as a method
+    print(f"Health: {player.health}")  
 
 class Armor:
     def __init__(self, name, price, health):
@@ -63,7 +63,7 @@ class Armor:
 
         action = input("What do you want to do? Dungeon, Shop, Profile, Leaderboard, or Exit: ")
         if action.lower() == "dungeon":
-            dungeon_interaction(player, save_character_info)  # Updated call to dungeon_interaction function
+            dungeon_interaction(player, save_character_info) 
         elif action.lower() == "shop":
             shop_interaction(player)
         elif action.lower() == "leaderboard":
