@@ -1,6 +1,8 @@
-from main import create_main_character, load_character_info, save_character_info, display_character_info
-from shop import shop_interaction
+from main import load_character_info, display_character_info, create_main_character
+from save import save_character_info
 from dungeon import dungeon_interaction
+from shop import shop_interaction
+from main import view_profile
 
 def main_character_interaction():
     while True:
@@ -12,23 +14,19 @@ def main_character_interaction():
         print("Welcome to The Dungeons!")
         display_character_info(player)
 
-        action = input("What do you want to do? Dungeon, Shop, Profile, Leaderboard, or Exit: ")
+        action = input("What do you want to do? Dungeon, Shop, Profile, or Exit: ")
         if action.lower() == "dungeon":
-            dungeon_interaction(player)
+            dungeon_interaction(player, save_character_info) 
         elif action.lower() == "shop":
             shop_interaction(player)
+            save_character_info(player)
         elif action.lower() == "profile":
-            print("Viewing Character Profile:")
-            display_character_info(player)
-        elif action.lower() == "leaderboard":
-            print("Viewing Leaderboard:")
-            # Implement leaderboard interaction here
+            view_profile()
         elif action.lower() == "exit":
             print("Exiting the game. Goodbye!")
             break
         else:
-            print("Invalid action. Please choose 'Dungeon', 'Shop', 'Profile', 'Leaderboard', or 'Exit'.")
+            print("Invalid action. Please choose 'Dungeon', 'Shop', 'Profile', or 'Exit'.")
 
 if __name__ == "__main__":
     main_character_interaction()
-
