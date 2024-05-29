@@ -1,73 +1,94 @@
-class Weapon_Shop:
+import json
+from save import save_character_info
+
+class WeaponShop:
     def __init__(self, name, price, damage):
         self.name = name
         self.price = price
         self.damage = damage
 
-class Armor_Shop:
+class ArmorShop:
     def __init__(self, name, price, health):
         self.name = name
         self.price = price
         self.health = health
 
-def main_character_interaction():
+def save_character_info(character):
+    with open("character_info.json", "w") as f:
+        json.dump(character.__dict__, f)
+
+def shop_interaction(player):
     while True:
-        bank_balance = 100
-        action = input("What do you want to do? Dungeon or Shop: ")
+        bank_balance = player.coins
+        action = input("What do you want to do? Buy or Exit: ").lower()
 
-        if action.lower() == "shop":
-            shop = input("Do you want to visit the Weapon Shop or the Armor Shop? ")
+        if action == "buy":
+            shop = input("Do you want to visit the Weapon Shop or the Armor Shop? ").lower()
 
-            if shop.lower() == "weapon":
-                weaponshop = [Weapon_Shop("Axe", 10, 10),
-                               Weapon_Shop("Basic Sword", 50, 25),
-                               Weapon_Shop("Wooden Sword", 100, 35),
-                               Weapon_Shop("Stone Sword", 200, 50),
-                               Weapon_Shop("Iron Sword", 400, 75)]
+            if shop == "weapon":
+                weaponshop = [
+                    WeaponShop("Axe", 10, 10),
+                    WeaponShop("Basic Sword", 50, 25),
+                    WeaponShop("Wooden Sword", 100, 35),
+                    WeaponShop("Stone Sword", 200, 50),
+                    WeaponShop("Iron Sword", 400, 75)
+                ]
 
                 print("Available Weapons:")
                 for weapon in weaponshop:
                     print(f"{weapon.name} - Price: {weapon.price} - Damage: {weapon.damage}")
 
-                chosen_weapon = input("Which weapon would you like to buy? Type exit to leave the shop. ")
+                chosen_weapon = input("Which weapon would you like to buy? Type exit to leave the shop. ").lower()
+
+                if chosen_weapon == "exit":
+                    break
 
                 for weapon in weaponshop:
-                    if chosen_weapon.lower() == weapon.name.lower():
+                    if chosen_weapon == weapon.name.lower():
                         if bank_balance >= weapon.price:
                             print(f"Purchased {weapon.name} for {weapon.price} coins.")
+                            player.weapon = weapon.name
                             bank_balance -= weapon.price
+                            player.coins = bank_balance
+                            save_character_info(player)
+                            break
                         else:
-                            print("Invalid coins.")
-                        if chosen_weapon.lower() == "exit":  
+                            print("Insufficient coins.")
                             break
 
-            elif shop.lower() == "armor":
-                armorshop = [Armor_Shop("Cotton Armor", 10, 10),
-                               Armor_Shop("Wool Armor", 50, 25),
-                               Armor_Shop("Wooden Armor", 150, 50),
-                               Armor_Shop("Thin Metal Armor", 250, 55),
-                               Armor_Shop("Thick Metal Armor", 500, 80)]
+            elif shop == "armor":
+                armorshop = [
+                    ArmorShop("Cotton Armor", 10, 10),
+                    ArmorShop("Wool Armor", 50, 25),
+                    ArmorShop("Wooden Armor", 150, 50),
+                    ArmorShop("Thin Metal Armor", 250, 55),
+                    ArmorShop("Thick Metal Armor", 500, 80)
+                ]
 
                 print("Available Armor:")
                 for armor in armorshop:
                     print(f"{armor.name} - Price: {armor.price} - Armor Health: {armor.health}")
 
-                chosen_armor = input("Which armor would you like to buy? Type exit to leave the shop. ")
+                chosen_armor = input("Which armor would you like to buy? Type exit to leave the shop. ").lower()
+
+                if chosen_armor == "exit":
+                    break
 
                 for armor in armorshop:
-                    if chosen_armor.lower() == armor.name.lower():
+                    if chosen_armor == armor.name.lower():
                         if bank_balance >= armor.price:
                             print(f"Purchased {armor.name} for {armor.price} coins.")
+                            player.armor = armor
                             bank_balance -= armor.price
-                        elif bank_balance <= armor.price:
-                            print("Invalid coins.")
-                        elif chosen_armor.lower() == "exit":
+                            player.coins = bank_balance
+                            save_character_info(player)
+                            break
+                        else:
+                            print("Insufficient coins.")
                             break
 
-        elif action.lower() == "dungeon":
-            print("Entering the dungeon...")
+        elif action == "exit":
+            break
 
         else:
-            print("Invalid action. Please choose 'Dungeon' or 'Shop'.")
-
-main_character_interaction()
+            print("Invalid action. Please choose 'Buy' or 'Exit'.")
