@@ -16,10 +16,9 @@ def main_character_interaction():
 
         action = input("What do you want to do? Dungeon, Shop, Profile, or Exit: ")
         if action.lower() == "dungeon":
-            dungeon_interaction(player, save_character_info) 
+            dungeon_interaction(player, save_character_info)
         elif action.lower() == "shop":
-            shop_interaction(player)
-            save_character_info(player)
+            shop_interaction(player, save_character_info)
         elif action.lower() == "profile":
             view_profile()
         elif action.lower() == "exit":

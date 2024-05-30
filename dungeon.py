@@ -1,11 +1,11 @@
 import random
 from save import save_character_info
 
-def dungeon_interaction(player, save_function):
+def dungeon_interaction(player, save_character_info):
     print("Entering the dungeon...")
 
     player.base_health = 100
-    player.health = player.max_health
+    player.health = player.max_health()
 
     dungeon_levels = [
         {"level": 1, "name": "Trainer", "health": 100, "damage": 5, "unlocked": False},
@@ -69,7 +69,7 @@ def dungeon_interaction(player, save_function):
         else:
             print("Invalid choice. Choose 'hit' or 'block'.")
 
-        if player.health <= 0:
+        if player.health() <= 0:
             print("You died. Game over.")
             break
 
@@ -80,8 +80,9 @@ def dungeon_interaction(player, save_function):
             next_level["unlocked"] = True
             print(f"Next dungeon, Dungeon Level {next_level['level']} ({next_level['name']}), is now unlocked!")
         player.dungeon_level = chosen_level["level"] + 1
-    save_function(player) 
-
+    save_character_info(player) 
 
     if chosen_level["level"] == 10:
         print("Congratulations! You've completed all dungeons. Wait for more levels to come out.")
+
+save_character_info(player)

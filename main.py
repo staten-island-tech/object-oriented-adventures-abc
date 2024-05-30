@@ -11,19 +11,21 @@ class MainCharacter:
         self.weapon = weapon
         self.coins = coins
         self.base_health = health
-
+        
+    @property
     def health(self):
         if self.armor:
-            return (self.base_health + self.armor.health, self.max_health)
+            return min(self.base_health + self.armor.health, self.max_health)
         else:
-            return (self.base_health, self.max_health)
+            return self.base_health
 
+    @property
     def max_health(self):
         if self.armor:
             return self.base_health + self.armor.health
         else:
             return self.base_health
-        
+
 def view_profile():
     player = load_character_info()
     if player:
@@ -56,20 +58,29 @@ class Armor:
         self.name = name
         self.price = price
         self.health = health
-        player = load_character_info
+
+def main_character_interaction():
+    while True:
+        player = load_character_info()
+        if player is None:
+            player = create_main_character()
+            save_character_info(player)
 
         print("Welcome to The Dungeons!")
         display_character_info(player)
 
-        action = input("What do you want to do? Dungeon, Shop, Profile, Leaderboard, or Exit: ")
-        if action.lower() == "dungeon":
-            dungeon_interaction(player, save_character_info) 
-        elif action.lower() == "shop":
+        action = input("What do you want to do? Dungeon, Shop, Profile, Leaderboard, or Exit: ").lower()
+        if action == "dungeon":
+            dungeon_interaction(player, save_character_info)
+        elif action == "shop":
             shop_interaction(player)
-        elif action.lower() == "leaderboard":
+        elif action == "profile":
+            view_profile()
+        elif action == "leaderboard":
             print("Viewing Leaderboard:")
-        elif action.lower() == "exit":
+        elif action == "exit":
             print("Exiting the game. Goodbye!")
+            break
         else:
             print("Invalid action. Please choose 'Dungeon', 'Shop', 'Profile', 'Leaderboard', or 'Exit'.")
 

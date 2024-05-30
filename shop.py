@@ -17,7 +17,7 @@ def save_character_info(character):
     with open("character_info.json", "w") as f:
         json.dump(character.__dict__, f)
 
-def shop_interaction(player):
+def shop_interaction(player, save_character_info):
     while True:
         bank_balance = player.coins
         action = input("What do you want to do? Buy or Exit: ").lower()
@@ -38,7 +38,7 @@ def shop_interaction(player):
                 for weapon in weaponshop:
                     print(f"{weapon.name} - Price: {weapon.price} - Damage: {weapon.damage}")
 
-                chosen_weapon = input("Which weapon would you like to buy? Type exit to leave the shop. ").lower()
+                chosen_weapon = input("Which weapon would you like to buy? Type 'exit' to leave the shop. ").lower()
 
                 if chosen_weapon == "exit":
                     break
@@ -55,6 +55,8 @@ def shop_interaction(player):
                         else:
                             print("Insufficient coins.")
                             break
+                else:
+                    print("Invalid weapon choice.")
 
             elif shop == "armor":
                 armorshop = [
@@ -69,7 +71,7 @@ def shop_interaction(player):
                 for armor in armorshop:
                     print(f"{armor.name} - Price: {armor.price} - Armor Health: {armor.health}")
 
-                chosen_armor = input("Which armor would you like to buy? Type exit to leave the shop. ").lower()
+                chosen_armor = input("Which armor would you like to buy? Type 'exit' to leave the shop. ").lower()
 
                 if chosen_armor == "exit":
                     break
@@ -86,9 +88,36 @@ def shop_interaction(player):
                         else:
                             print("Insufficient coins.")
                             break
+                else:
+                    print("Invalid armor choice.")
+
+            else:
+                print("Invalid shop choice.")
 
         elif action == "exit":
             break
 
         else:
             print("Invalid action. Please choose 'Buy' or 'Exit'.")
+
+if __name__ == "__main__":
+    # Add the necessary imports for player-related functionality
+    from main import load_character_info, display_character_info, create_main_character
+
+    while True:
+        player = load_character_info()
+        if player is None:
+            player = create_main_character()
+            save_character_info(player)
+
+        print("Welcome to The Dungeons!")
+        display_character_info(player)
+
+        shop_interaction(player)
+
+        action = input("Do you want to continue exploring or exit the game? (Explore/Exit): ").lower()
+        if action == "exit":
+            print("Exiting the game. Goodbye!")
+            break
+
+save_character_info(player)
