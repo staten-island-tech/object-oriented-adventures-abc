@@ -13,10 +13,6 @@ class ArmorShop:
         self.price = price
         self.health = health
 
-def save_character_info(character):
-    with open("character_info.json", "w") as f:
-        json.dump(character.__dict__, f)
-
 def shop_interaction(player, save_character_info):
     while True:
         bank_balance = player.coins
@@ -80,7 +76,7 @@ def shop_interaction(player, save_character_info):
                     if chosen_armor == armor.name.lower():
                         if bank_balance >= armor.price:
                             print(f"Purchased {armor.name} for {armor.price} coins.")
-                            player.armor = armor
+                            player.armor = armor.name
                             bank_balance -= armor.price
                             player.coins = bank_balance
                             save_character_info(player)
@@ -99,25 +95,3 @@ def shop_interaction(player, save_character_info):
 
         else:
             print("Invalid action. Please choose 'Buy' or 'Exit'.")
-
-if __name__ == "__main__":
-    # Add the necessary imports for player-related functionality
-    from main import load_character_info, display_character_info, create_main_character
-
-    while True:
-        player = load_character_info()
-        if player is None:
-            player = create_main_character()
-            save_character_info(player)
-
-        print("Welcome to The Dungeons!")
-        display_character_info(player)
-
-        shop_interaction(player)
-
-        action = input("Do you want to continue exploring or exit the game? (Explore/Exit): ").lower()
-        if action == "exit":
-            print("Exiting the game. Goodbye!")
-            break
-
-save_character_info(player)
