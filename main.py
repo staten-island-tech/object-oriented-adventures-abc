@@ -1,6 +1,6 @@
 import json
 import os
-from shop import WeaponShop
+from shop import WeaponShop, ArmorShop
 from save import save_character_info
 
 class MainCharacter:
@@ -12,15 +12,8 @@ class MainCharacter:
         self.coins = coins
         self.base_health = health
 
-    @property
-    def health(self):
-        if self.armor:
-            return min(self.base_health + self.armor.health, self.max_health)
-        else:
-            return self.base_health
-
-    @property
-    def max_health(self):
+    def get_health(self):
+        self.base_health = 100
         if self.armor:
             return self.base_health + self.armor.health
         else:
@@ -37,23 +30,55 @@ def view_profile():
 def create_main_character():
     print("Welcome to The Dungeons!")
     name = input("What do you want to name your character? Enter: ")
-    return MainCharacter(name)
+    character = MainCharacter(name)
+    save_character_info(character) 
+    return character
 
 def load_character_info():
-    try:
+    try:    # could be exceptions
         with open("character_info.json", "r") as f:
             character_info = json.load(f)
-            character_info.pop('base_health', None)
-            weapon_info = character_info.get('weapon')
-            weapon = WeaponShop(weapon_info['name'], weapon_info['price'], weapon_info['damage']) if weapon_info else None
-            return MainCharacter(**character_info, weapon=weapon)
-    except FileNotFoundError:
-        return None
+            if not character_info or all(value == "" for value in character_info.values()):
+                return None  # if character info is empty don't return anything (except)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None 
+
+    weapon_info = character_info.get('weapon')
+    weapon = None
+    if weapon_info and isinstance(weapon_info, dict):
+        weapon = WeaponShop(weapon_info['name'], int(weapon_info['price']), int(weapon_info['damage']))
+
+    armor_info = character_info.get('armor')
+    armor = None
+    if armor_info and isinstance(armor_info, dict):
+        armor = ArmorShop(armor_info['name'], int(armor_info['price']), int(armor_info['health']))
+
+    return MainCharacter(
+        name=character_info.get('name', ''),
+        dungeon_level=character_info.get('dungeon_level', 1),
+        armor=armor,
+        weapon=weapon,
+        coins=character_info.get('coins', 100),
+        health=character_info.get('health', 100)
+    )
+
+if not os.path.exists("character_info.json"): #if the file doesn't exist, then do this
+    empty_character = {
+        "name": None,
+        "dungeon_level": 1,
+        "armor": None,
+        "weapon": None,
+        "coins": 100,
+        "health": 100
+    }
+
+    with open("character_info.json", "w") as f:
+        json.dump(empty_character, f, indent=4)
 
 def display_character_info(player):
     print(f"Character Name: {player.name}")
     print(f"Dungeon Level: {player.dungeon_level}")
     print(f"Coins: {player.coins}")
-    print(f"Equipped Armor: {player.armor if player.armor else 'None'}")
-    print(f"Equipped Weapon: {player.weapon}")
-    print(f"Health: {player.health}")  
+    print(f"Equipped Armor: {player.armor.name if player.armor else 'None'}")
+    print(f"Equipped Weapon: {player.weapon.name if player.weapon else 'None'}")
+    print(f"Health: {player.get_health()}")
