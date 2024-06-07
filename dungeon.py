@@ -36,7 +36,7 @@ def dungeon_interaction(player):
         for level in dungeon_levels:
             if level["unlocked"]:
                 print(f"Dungeon Level {level['level']}: {level['name']}")
-        chosen_dungeon = input("What dungeon do you want to do? Enter the number (or type 'exit' to leave): ")
+        chosen_dungeon = input("What dungeon do you want to do? Enter the number (or type 'exit' to quit the dungeon): ")
         
         if chosen_dungeon.lower() == 'exit':
             print("Exiting dungeon selection.")
@@ -47,7 +47,7 @@ def dungeon_interaction(player):
             chosen_level = next((level for level in dungeon_levels if level["level"] == chosen_dungeon), None)
             if chosen_level and chosen_level["unlocked"]:
                 break
-        print("Invalid choice or dungeon is locked. Try again.")
+        print("Invalid choice or dungeon is locked. Retype an option.")
 
     if chosen_level:
         print(f"You chose Dungeon Level {chosen_level['level']}: {chosen_level['name']}")
@@ -68,21 +68,21 @@ def dungeon_interaction(player):
                 if chosen_level["health"] <= 0:
                     coins_earned = chosen_level["level"] * 100
                     player.coins += coins_earned
-                    print(f"You earned {coins_earned} coins for completing the dungeon!")
-                    print("Congratulations! You defeated the monster!")
+                    print(f"You got {coins_earned} coins for winning!")
+                    print("Congratulats! You won something for once.")
                     break
         elif action == "block":
             if random.random() < 0.5:
-                print("You failed to block the monster's attack!")
+                print("You failed to block, lol u got hit.")
                 player.base_health -= chosen_level["damage"]
             else:
-                print("You successfully blocked the monster's attack and recovered a bit.")
+                print("You successfully blocked and recovered 10 health, nice.")
                 player.base_health += 10
         else:
-            print("Invalid choice. Choose 'hit' or 'block'.")
+            print("That's not an option. Choose 'hit' or 'block'.")
 
         if player.base_health <= 0:
-            print("You died. Game over.")
+            print("You died. You suck, quit the game.")
             return
 
     # dungeon completion and next level
@@ -95,9 +95,9 @@ def dungeon_interaction(player):
                     next_level["unlocked"] = True
                     print(f"Next dungeon, Dungeon Level {next_level['level']} ({next_level['name']}), is now unlocked!")
             else:
-                print("Congratulations! You've completed all dungeons. Wait for more levels to come out.")
+                print("Wow you're kind of cool, you completed the game, there are no more to do!")
     else:
-        print("No dungeon selected. Exiting dungeon interaction.")
+        print("You didn't select a dungeon.")
 
     player.health = player.get_health()
     save_character_info(player)

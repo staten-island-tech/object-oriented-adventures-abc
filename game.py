@@ -13,10 +13,10 @@ def main_character_interaction():
             player = create_main_character()
             save_character_info
 
-        print("Welcome to The Dungeons!")
+        print("Welcome to The Dungeons! Open the readME.md to learn about the game, however, it is simple, all you have to do is get through dungeons and level up your character.")
         display_character_info(player)
 
-        action = input("What do you want to do? Dungeon, Shop, Profile, or Exit: ").lower()
+        action = input("What do you want to do in the game, there are four options. Type 'Dungeon', 'Shop', 'Profile', or 'Exit': ").lower()
         if action == "dungeon":
             dungeon_interaction(player)
         elif action == "shop":
@@ -24,10 +24,10 @@ def main_character_interaction():
         elif action == "profile":
             view_profile()
         elif action == "exit":
-            print("Exiting the game. Goodbye!")
+            print("Why don't you want to play the game? Press play again please.")
             break
         else:
-            print("Invalid action. Please choose 'Dungeon', 'Shop', 'Profile', or 'Exit'.")
+            print("Invalid action. Please choose 'Dungeon', 'Shop', or 'Profile'. Do not type 'Exit'.")
 
 if __name__ == "__main__":
     main_character_interaction()

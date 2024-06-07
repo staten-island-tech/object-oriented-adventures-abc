@@ -22,7 +22,7 @@ class ArmorShop:
 def shop_interaction(player, save_character_info):
     while True:
         bank_balance = player.coins
-        shop = input("Do you want to visit the Weapon Shop or the Armor Shop? Type 'exit' to leave: ").lower()
+        shop = input("Do you want to visit the Weapon Shop or the Armor Shop? Type the full shop out. Type 'exit' to leave: ").lower()
 
         if shop == "exit":
             break
@@ -47,11 +47,11 @@ def shop_interaction(player, save_character_info):
                 WeaponShop("X", 100000, 1111),
             ]
 
-            print("Available Weapons:")
+            print("Weapons you can buy in this shop:")
             for weapon in weaponshop:
                 print(f"{weapon.name} - Price: {weapon.price} - Damage: {weapon.damage}")
 
-            chosen_weapon = input("Which weapon would you like to buy? Type 'exit' to leave the shop. ").lower()
+            chosen_weapon = input("Which weapon would you like to buy? Type its full name. Type 'exit' to leave the shop. ").lower()
 
             if chosen_weapon == "exit":
                 break
@@ -89,11 +89,11 @@ def shop_interaction(player, save_character_info):
                 ArmorShop("X Armor", 111111, 1111),
             ]
 
-            print("Available Armor:")
+            print("Armor you can buy in this shop:")
             for armor in armorshop:
                 print(f"{armor.name} - Price: {armor.price} - Armor Health: {armor.health}")
 
-            chosen_armor = input("Which armor would you like to buy? Type 'exit' to leave the shop. ").lower()
+            chosen_armor = input("Which armor would you like to buy? Type its full name. Type 'exit' to leave the shop. ").lower()
 
             if chosen_armor == "exit":
                 break
@@ -111,7 +111,7 @@ def shop_interaction(player, save_character_info):
                         print("Insufficient coins.")
                         break
             else:
-                print("Invalid armor choice.")
+                print("Invalid armor choice, make sure you spelled it right with spaces.")
 
         else:
-            print("Invalid shop choice.")
+            print("Invalid shop choice. Type 'Armor Shop' or 'Weapon Shop.'")
