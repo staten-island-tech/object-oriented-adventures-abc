@@ -99,5 +99,5 @@ def dungeon_interaction(player):
     else:
         print("You didn't select a dungeon.")
 
-    player.health = player.get_health()
     save_character_info(player)
+    
