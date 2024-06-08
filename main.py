@@ -13,7 +13,6 @@ class MainCharacter:
         self.base_health = health
 
     def get_health(self):
-        self.base_health = 100
         if self.armor:
             return self.base_health + self.armor.health
         else:

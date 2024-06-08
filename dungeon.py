@@ -5,7 +5,7 @@ def dungeon_interaction(player):
     print("Entering the dungeon...")
 
     # initializes the players health
-    player.health = player.get_health
+    player.base_health = player.get_health()
 
     dungeon_levels = [
         {"level": 1, "name": "Trainer", "health": 100, "damage": 15, "unlocked": False},
@@ -53,7 +53,7 @@ def dungeon_interaction(player):
         print(f"You chose Dungeon Level {chosen_level['level']}: {chosen_level['name']}")
 
     while chosen_level and chosen_level["health"] > 0 and player.base_health > 0:
-        print(f"Your Health: {player.get_health()}")
+        print(f"Your Health: {player.base_health}")
         print(f"Monster Health: {chosen_level['health']}")
         action = input("Do you want to hit or block? (hit/block): ").lower()
 
